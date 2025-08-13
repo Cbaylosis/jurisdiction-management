@@ -57,6 +57,19 @@
 </section>
 
 <div id="toast"></div>
+<!-- Delete Modal -->
+<div id="delete-modal" class="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="del-title" aria-describedby="del-desc">
+    <h3 id="del-title" class="modal-title">Remove Jurisdiction</h3>
+    <p id="del-desc" class="modal-text">
+      Are you sure you want to remove <span id="del-name" class="strong"></span> jurisdiction? This action cannot be undone.
+    </p>
+    <div class="modal-actions">
+      <button id="del-cancel" class="btn">Cancel</button>
+      <button id="del-confirm" class="btn danger">Remove</button>
+    </div>
+  </div>
+</div>
 
 <script src="assets/js/app.js"></script>
 </body>

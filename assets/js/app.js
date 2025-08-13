@@ -44,6 +44,7 @@
   let selected = {};    // id -> true
   let editingId = null; // id currently being edited
   let query = "";
+  let pendingDelete = null; // {id, name}
 
   // ===== Elements =====
   const elQ = $("#q");
@@ -62,6 +63,11 @@
   const elSelected = $("#selected");
   const elSelCount = $("#sel-count");
   const elSelectAll = $("#select-all");
+  // Delete Modal
+  const elDeleteModal = $("#delete-modal");
+  const elDelName = $("#del-name");
+  const elDelCancel = $("#del-cancel");
+  const elDelConfirm = $("#del-confirm");
 
   // ===== Init =====
   function init(){
@@ -209,6 +215,36 @@
     URL.revokeObjectURL(url);
   }
 
+    // ===== Delete Modal =====
+  function openDeleteModal(row){
+    pendingDelete = { id: row.id, name: row.name };
+    elDelName.textContent = `"${row.name}"`;
+    elDeleteModal.hidden = false;
+    elDelConfirm.focus();
+
+    function onKey(e){ if (e.key === "Escape") closeDeleteModal(); }
+    elDeleteModal._escHandler = onKey;
+    document.addEventListener("keydown", onKey);
+
+    function onOverlayClick(e){ if (e.target === elDeleteModal) closeDeleteModal(); }
+    elDeleteModal._overlayHandler = onOverlayClick;
+    elDeleteModal.addEventListener("click", onOverlayClick);
+  }
+
+  function closeDeleteModal(){
+    elDeleteModal.hidden = true;
+    document.removeEventListener("keydown", elDeleteModal._escHandler);
+    elDeleteModal.removeEventListener("click", elDeleteModal._overlayHandler);
+    pendingDelete = null;
+  }
+
+  function confirmDelete(){
+    if (!pendingDelete) return;
+    removeRow(pendingDelete.id);
+    toast.success(`Removed "${pendingDelete.name}".`);
+    closeDeleteModal();
+  }
+
   // ===== Render =====
   function render(){
     const list = $("#list");
@@ -309,11 +345,7 @@
           const del = document.createElement("button");
           del.className = "btn btn-sm danger";
           del.textContent = "Remove";
-          del.addEventListener("click", () => {
-            if (confirm(`Are you sure you want to remove "${r.name}" Jurisdiction?`)) {
-              removeRow(r.id);
-            }
-          });
+          del.addEventListener("click", () => openDeleteModal(r));  //Delete modal
           c7.appendChild(del);
 
         } else {
@@ -380,7 +412,9 @@
     data.forEach(r => { selected[r.id] = checked; });
     render();
   });
-
+  // Delete Modal
+  elDelCancel.addEventListener("click", closeDeleteModal);
+  elDelConfirm.addEventListener("click", confirmDelete);
   // Boot
   init();
 })();

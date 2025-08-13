@@ -63,3 +63,17 @@ body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubunt
 .row > div:nth-child(3) {
   min-width: 120px;
 }
+/* Delete Modal */
+.modal-overlay {
+  position: fixed; inset: 0; display: grid; place-items: center;
+  background: rgba(17, 24, 39, 0.45); z-index: 10000; padding: 16px;
+}
+.modal-overlay[hidden] { display: none !important; }
+.modal {
+  width: 100%; max-width: 420px; background: #fff; border-radius: 14px;
+  border: 1px solid #e5e7eb; box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  padding: 18px;
+}
+.modal-title { margin: 0 0 6px 0; font-size: 18px; }
+.modal-text { margin: 0 0 14px 0; color:#374151; }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end; }
